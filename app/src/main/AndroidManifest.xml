@@ -3,6 +3,7 @@
     package="com.example.migui.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -10,16 +11,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Billboard">
+        <activity
+            android:name=".ActivityWelcome"
+            android:label="@string/title_activity_welcome"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MovieDetails" android:parentActivityName=".Billboard">
-            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".Billboard"/>
+        <activity android:name=".ActivityBillboard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ActivityMovie"
+            android:parentActivityName=".ActivityBillboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ActivityBillboard" />
+            <!--TODO back button should go to billboard-->
         </activity>
     </application>
-
 </manifest>

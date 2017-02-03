@@ -16,10 +16,10 @@
 
 package com.example.migui.popularmovies;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +31,10 @@ class NetworkUtils {
     private final static String FILM_BASE_URL =
             "http://api.themoviedb.org/3/movie/";
 
-    private final static String IMAGE_BASE_URL =
+    final static String IMAGE_BASE_URL =
             "https://image.tmdb.org/t/p/w500";
 
-    private final static String KEY = "API_KEY_IN_HERE"; // TODO
+    private final static String KEY = "YOUR_API_KEY_GOES_HERE"; // TODO api key!!
 
     static String queryFilms(String sort) throws IOException {
         Uri.Builder uriBuilder = Uri.parse(FILM_BASE_URL).buildUpon()
@@ -56,18 +56,9 @@ class NetworkUtils {
         }
     }
 
-    static Bitmap queryImage(String path) {
-        Bitmap mIcon11 = null;
-        Uri.Builder uriBuilder = Uri.parse(IMAGE_BASE_URL).buildUpon()
-                .appendPath(path).appendQueryParameter("api_key", KEY);
-        try {
-            URL url = new URL(uriBuilder.build().toString());
-            InputStream in = url.openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
-            Log.e("Error", e.getMessage());
-            e.printStackTrace();
-        }
-        return mIcon11;
+    static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }

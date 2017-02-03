@@ -2,11 +2,12 @@ package com.example.migui.popularmovies;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -15,13 +16,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.migui.popularmovies.NetworkUtils.isOnline;
 
-public class Billboard extends AppCompatActivity {
+// TODO create the recyclerview
+// TODO implement sort button
+public class ActivityBillboard extends AppCompatActivity {
 
     private RecyclerView rvMoviesList;
     private ProgressBar pbFetchingMovies;
@@ -31,13 +33,19 @@ public class Billboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billboard);
 
-        rvMoviesList = (RecyclerView) findViewById(R.id.view_movies);
-        pbFetchingMovies = (ProgressBar) findViewById(R.id.pb_fetching_indicator);
+        Intent intent = getIntent();
+
+        if (intent != null) {
+            rvMoviesList = (RecyclerView) findViewById(R.id.view_movies);
+            pbFetchingMovies = (ProgressBar) findViewById(R.id.pb_fetching_indicator);
+
+            parseJSON(intent.getStringExtra("json"));
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.billboard_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_billboard, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -52,7 +60,10 @@ public class Billboard extends AppCompatActivity {
     }
 
     private void sortMovies() {
-        new MoviesQuery().execute("top_rated");
+        if (!isOnline(this))
+            Toast.makeText(this, "No connection Detected", Toast.LENGTH_LONG).show();
+        else
+            new MoviesQuery().execute("top_rated");
         // TODO -> implement sort movies
     }
 
@@ -61,7 +72,7 @@ public class Billboard extends AppCompatActivity {
         try {
             JSONArray array = new JSONObject(s).getJSONArray("results");
             for (int i = 0; i < array.length(); i++) {
-                films.add(new Film(array.getJSONObject(i), this));
+                films.add(new Film(array.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -69,18 +80,15 @@ public class Billboard extends AppCompatActivity {
 
         // TODO DEMO!
         System.out.println(films);
-        Intent intent = new Intent(this, MovieDetails.class);
-        Film film = films.get(0);
-        intent.putExtra("title", film.getTitle());
-        if (film.getOrigTitle() != null)
-            intent.putExtra("original_title", film.getOrigTitle());
-        intent.putExtra("overview", film.getOverview());
+        Intent intent = new Intent(this, ActivityMovie.class);
+        intent.putExtra("film", films.get(0));
         startActivity(intent);
     }
 
     class MoviesQuery extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
+            showProgressBar();
             super.onPreExecute();
         }
 
@@ -99,6 +107,18 @@ public class Billboard extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             parseJSON(s);
+            showFilms();
         }
     }
+
+    private void showFilms() {
+        pbFetchingMovies.setVisibility(View.INVISIBLE);
+        rvMoviesList.setVisibility(View.VISIBLE);
+    }
+
+    private void showProgressBar() {
+        rvMoviesList.setVisibility(View.INVISIBLE);
+        pbFetchingMovies.setVisibility(View.VISIBLE);
+    }
+
 }
