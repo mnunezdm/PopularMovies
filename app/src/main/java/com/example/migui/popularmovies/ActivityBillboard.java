@@ -22,7 +22,7 @@ import java.util.List;
 import static com.example.migui.popularmovies.NetworkUtils.isOnline;
 
 // TODO create the recyclerview
-// TODO implement sort button
+// TODO implement sort button, change at click popular to top_rated to popular...
 public class ActivityBillboard extends AppCompatActivity {
 
     private RecyclerView rvMoviesList;
@@ -85,7 +85,7 @@ public class ActivityBillboard extends AppCompatActivity {
         startActivity(intent);
     }
 
-    class MoviesQuery extends AsyncTask<String, Void, String> {
+    private class MoviesQuery extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             showProgressBar();
@@ -121,4 +121,9 @@ public class ActivityBillboard extends AppCompatActivity {
         pbFetchingMovies.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        //super.onBackPressed();
+    }
 }

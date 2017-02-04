@@ -1,29 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_movie_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#A3A3A3"/>
+        android:text="El señor de los anillos"
+        android:textColor="#A3A3A3"
+        android:textSize="22sp"
+        tools:layout_editor_absoluteX="0dp"
+        android:layout_marginTop="16dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/text_original_title"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#A3A3A3"/>
+        android:text="The Lord of the Rings"
+        android:textColor="#A3A3A3"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        tools:layout_editor_absoluteX="0dp" />
 
+    <TextView
+        android:id="@+id/text_release_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2005"
+        android:textColor="#A3A3A3"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_original_title"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/text_vote_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8.0/10"
+        android:textColor="#A3A3A3"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_release_date"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:layout_width="147dp"
+        android:layout_height="225dp"
+        app:srcCompat="@mipmap/pets"
+        android:id="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:layout_editor_absoluteX="221dp" />
 
     <TextView
         android:id="@+id/text_overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#A3A3A3"/>
+        android:text="En la Tierra Media, el Señor Oscuro Saurón ordenó a los Elfos que forjaran los Grandes Anillos de Poder. Tres para los reyes Elfos, siete para los Señores Enanos, y nueve para los Hombres Mortales. Pero Saurón también forjó, en secreto, el Anillo Único, que tiene el poder de esclavizar toda la Tierra Media. Con la ayuda de sus amigos y de valientes aliados, el joven hobbit Frodo emprende un peligroso viaje con la misión de destruir el Anillo Único. Pero el malvado Sauron ordena la persecución del grupo, compuesto por Frodo y sus leales amigos hobbits, un mago, un hombre, un elfo y un enano. La misión es casi suicida pero necesaria, pues si Sauron con su ejército de orcos lograra recuperar el Anillo, sería el final de la Tierra Media. "
+        android:textColor="#A3A3A3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        android:layout_marginTop="8dp"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

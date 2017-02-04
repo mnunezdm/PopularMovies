@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-// TODO implement the rest of the fields
-// TODO organize everything
+import com.squareup.picasso.Picasso;
+
 public class ActivityMovie extends AppCompatActivity {
     private Film film;
 
@@ -25,7 +26,10 @@ public class ActivityMovie extends AppCompatActivity {
         if (film != null) {
             TextView textOriginalTitle = (TextView) findViewById(R.id.text_original_title);
             TextView textOverview = (TextView) findViewById(R.id.text_overview);
+            TextView textDate = (TextView) findViewById(R.id.text_release_date);
+            TextView textRating = (TextView) findViewById(R.id.text_vote_average);
             TextView textTitle = (TextView) findViewById(R.id.text_title);
+            ImageView imageView = (ImageView) findViewById(R.id.imageView3);
 
             textTitle.setText(film.getTitle());
 
@@ -34,7 +38,13 @@ public class ActivityMovie extends AppCompatActivity {
                 textOriginalTitle.setText(film.getOrigTitle());
             }
 
+            textDate.setText(film.getReleaseDate());
+
+            textRating.setText(film.getRating());
+
             textOverview.setText(film.getOverview());
+
+            Picasso.with(this).load(film.getImageURL()).into(imageView);
         }
     }
 

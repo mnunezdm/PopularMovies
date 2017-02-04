@@ -15,17 +15,19 @@ class Film implements Parcelable {
     private String title;
     private String origTitle;
     private String overview;
-    private double vote_average;
-    private String image;
-    private String release_date;
+    private double voteAverage;
+    private int voteNumber;
+    private String imageURL;
+    private String releaseDate;
 
     Film(JSONObject json) throws JSONException {
         title = json.getString("title");
         origTitle = json.getString("original_title");
         overview = json.getString("overview");
-        release_date = json.getString("release_date");
-        vote_average = json.getDouble("vote_average");
-        image = NetworkUtils.IMAGE_BASE_URL + json.getString("poster_path");
+        releaseDate = json.getString("release_date");
+        voteNumber = json.getInt("vote_count");
+        voteAverage = json.getDouble("vote_average");
+        imageURL = NetworkUtils.IMAGE_BASE_URL + json.getString("poster_path");
     }
 
     // ************ Getters ************
@@ -44,18 +46,12 @@ class Film implements Parcelable {
         return overview;
     }
 
-    ImageView getImageView(Context context) {
-        ImageView imageView = new ImageView(context);
-        Picasso.with(context).load(image).into(imageView);
-        return imageView;
+    String getImageURL() {
+        return imageURL;
     }
 
-    String getRelease_date() {
-        return release_date;
-    }
-
-    double getVote_average() {
-        return vote_average;
+    String getReleaseDate() {
+        return releaseDate;
     }
 
     @Override
@@ -69,9 +65,10 @@ class Film implements Parcelable {
         title = in.readString();
         origTitle = in.readString();
         overview = in.readString();
-        vote_average = in.readDouble();
-        image = in.readString();
-        release_date = in.readString();
+        voteAverage = in.readDouble();
+        voteNumber = in.readInt();
+        imageURL = in.readString();
+        releaseDate = in.readString();
     }
 
     @Override
@@ -84,9 +81,10 @@ class Film implements Parcelable {
         dest.writeString(title);
         dest.writeString(origTitle);
         dest.writeString(overview);
-        dest.writeDouble(vote_average);
-        dest.writeString(image);
-        dest.writeString(release_date);
+        dest.writeDouble(voteAverage);
+        dest.writeInt(voteNumber);
+        dest.writeString(imageURL);
+        dest.writeString(releaseDate);
     }
 
     public static final Creator<Film> CREATOR = new Creator<Film>() {
@@ -100,4 +98,8 @@ class Film implements Parcelable {
             return new Film[size];
         }
     };
+
+    String getRating() {
+        return voteAverage + "/10 (" + voteNumber +")";
+    }
 }
