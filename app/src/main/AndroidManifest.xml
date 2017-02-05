@@ -18,21 +18,15 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityBillboard">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".ActivityBillboard"></activity>
         <activity
             android:name=".ActivityMovie"
-            android:parentActivityName=".ActivityBillboard">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ActivityBillboard" />
-            <!--TODO back button should go to billboard-->
-        </activity>
+            android:parentActivityName=".ActivityBillboard" />
+        <activity android:name=".asas"></activity>
     </application>
+
 </manifest>

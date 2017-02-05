@@ -1,15 +1,10 @@
 package com.example.migui.popularmovies;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.ImageView;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 class Film implements Parcelable {
     private String title;
@@ -52,6 +47,10 @@ class Film implements Parcelable {
 
     String getReleaseDate() {
         return releaseDate;
+    }
+
+    String getRating() {
+        return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +")";
     }
 
     @Override
@@ -98,8 +97,4 @@ class Film implements Parcelable {
             return new Film[size];
         }
     };
-
-    String getRating() {
-        return voteAverage + "/10 (" + voteNumber +")";
-    }
 }

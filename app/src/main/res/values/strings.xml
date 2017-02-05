@@ -2,14 +2,15 @@
     <string name="app_name">Popular Movies</string>
     <string name="sort">Sort</string>
     <string name="share">Share</string>
-
     <string name="title_activity_welcome">WelcomeActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="by_mnunezdm">by mnunezdm</string>
     <string name="powered_by">powered by The Movie DB</string>
     <string name="fetching">fetching</string>
     <string name="welcome_to">Welcome to</string>
     <string name="error_connectivity">ERROR</string>
     <string name="connectivity_issues">Connectivity Issues</string>
+    <string name="share_string">Have a look to %1$s #PopularMovies</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="popular">Popular</string>
 </resources>

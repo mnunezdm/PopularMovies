@@ -65,7 +65,9 @@ public class ActivityMovie extends AppCompatActivity {
     }
 
     private void shareMovieInfo() {
+        String shareMessage = getResources().getString(R.string.share_string);
+        shareMessage = String.format(shareMessage, film.getTitle());
         ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain").setText(film.toString()).startChooser();
+                .setType("text/plain").setText(shareMessage).startChooser();
     }
 }

@@ -5,6 +5,6 @@
         android:id="@+id/menu_sort"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
-        android:title="@string/sort"/>
+        android:title="@string/top_rated"/>
 
 </menu>

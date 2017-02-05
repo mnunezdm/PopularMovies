@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,12 +23,15 @@ import java.util.List;
 
 import static com.example.migui.popularmovies.NetworkUtils.isOnline;
 
-// TODO create the recyclerview
-// TODO implement sort button, change at click popular to top_rated to popular...
-public class ActivityBillboard extends AppCompatActivity {
-
+public class ActivityBillboard extends AppCompatActivity
+        implements PosterAdapter.PosterAdapterOnClickHandler {
     private RecyclerView rvMoviesList;
+    private PosterAdapter posterAdapter;
     private ProgressBar pbFetchingMovies;
+    private TextView tvError;
+    private TextView tvConnectivity;
+    private boolean byTopRated = true;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +39,21 @@ public class ActivityBillboard extends AppCompatActivity {
         setContentView(R.layout.activity_billboard);
 
         Intent intent = getIntent();
+        pbFetchingMovies = (ProgressBar) findViewById(R.id.pb_fetching_indicator);
 
-        if (intent != null) {
-            rvMoviesList = (RecyclerView) findViewById(R.id.view_movies);
-            pbFetchingMovies = (ProgressBar) findViewById(R.id.pb_fetching_indicator);
+        rvMoviesList = (RecyclerView) findViewById(R.id.view_movies);
+        GridLayoutManager layoutManager =
+                new GridLayoutManager(this, 2);
+        rvMoviesList.setLayoutManager(layoutManager);
+        rvMoviesList.setHasFixedSize(true);
 
-            parseJSON(intent.getStringExtra("json"));
-        }
+        posterAdapter = new PosterAdapter(this);
+        rvMoviesList.setAdapter(posterAdapter);
+
+        tvError = (TextView) findViewById(R.id.tv_bill_error);
+        tvConnectivity = (TextView) findViewById(R.id.tv_bill_connectivity);
+
+        parseJSON(intent.getStringExtra("json"));
     }
 
     @Override
@@ -51,44 +64,102 @@ public class ActivityBillboard extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_sort:
-                sortMovies();
-                return true;
+        try {
+            switch (item.getItemId()) {
+                case R.id.menu_sort:
+                    sortMovies();
+                    if (!byTopRated) {
+                        item.setTitle(R.string.top_rated);
+                        byTopRated = true;
+                    } else {
+                        item.setTitle(R.string.popular);
+                        byTopRated = false;
+                    }
+                    return true;
+            }
+        } catch (Exception e) {
+            errorConnection();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void sortMovies() {
-        if (!isOnline(this))
-            Toast.makeText(this, "No connection Detected", Toast.LENGTH_LONG).show();
-        else
+    /**
+     * <B>FUNCTION:</B> checks if there is connectivity and launches the query
+     */
+    private void sortMovies() throws Exception {
+        if (!isOnline(this)) {
+            errorConnection();
+            throw new Exception();
+        } else if (!byTopRated)
             new MoviesQuery().execute("top_rated");
-        // TODO -> implement sort movies
+        else
+            new MoviesQuery().execute("popular");
     }
 
-    private void parseJSON(String s) {
+    /**
+     * <B>FUNCTION:</B> creates the list of all the movies in the json passed
+     *
+     * @param json JSON array with all the movies
+     */
+    private void parseJSON(String json) {
         List<Film> films = new ArrayList<>();
         try {
-            JSONArray array = new JSONObject(s).getJSONArray("results");
+            JSONArray array = new JSONObject(json).getJSONArray("results");
             for (int i = 0; i < array.length(); i++) {
                 films.add(new Film(array.getJSONObject(i)));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            errorConnection();
         }
 
-        // TODO DEMO!
-        System.out.println(films);
+        posterAdapter.setFilmList(films);
+        changeViews(false);
+    }
+
+    /**
+     * <B>FUNCTION:</B> hides or shows the ProgressBar and the RecyclerView
+     *
+     * @param fetching if true fetching is in progress show PB hide RV
+     */
+    private void changeViews(boolean fetching) {
+        tvError.setVisibility(View.INVISIBLE);
+        tvConnectivity.setVisibility(View.INVISIBLE);
+        if (!fetching) {
+            pbFetchingMovies.setVisibility(View.INVISIBLE);
+            rvMoviesList.setVisibility(View.VISIBLE);
+        } else {
+            rvMoviesList.setVisibility(View.INVISIBLE);
+            pbFetchingMovies.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void errorConnection() {
+        if (toast == null){
+            toast = Toast.makeText(this, R.string.connectivity_issues, Toast.LENGTH_LONG);
+        }
+        toast.show();
+        pbFetchingMovies.setVisibility(View.INVISIBLE);
+        rvMoviesList.setVisibility(View.INVISIBLE);
+        tvError.setVisibility(View.VISIBLE);
+        tvConnectivity.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * <B>FUNCTION:</B> starts a ActivityMovie with filmToExpand
+     *
+     * @param film film to expand
+     */
+    @Override
+    public void onClick(Film film) {
         Intent intent = new Intent(this, ActivityMovie.class);
-        intent.putExtra("film", films.get(0));
+        intent.putExtra("film", film);
         startActivity(intent);
     }
 
     private class MoviesQuery extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
-            showProgressBar();
+            changeViews(true);
             super.onPreExecute();
         }
 
@@ -99,7 +170,7 @@ public class ActivityBillboard extends AppCompatActivity {
             try {
                 githubSearchResults = NetworkUtils.queryFilms(searchUrl);
             } catch (IOException e) {
-                e.printStackTrace();
+                errorConnection();
             }
             return githubSearchResults;
         }
@@ -107,23 +178,7 @@ public class ActivityBillboard extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             parseJSON(s);
-            showFilms();
+            changeViews(false);
         }
-    }
-
-    private void showFilms() {
-        pbFetchingMovies.setVisibility(View.INVISIBLE);
-        rvMoviesList.setVisibility(View.VISIBLE);
-    }
-
-    private void showProgressBar() {
-        rvMoviesList.setVisibility(View.INVISIBLE);
-        pbFetchingMovies.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        //super.onBackPressed();
     }
 }
