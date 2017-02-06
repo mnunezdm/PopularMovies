@@ -9,32 +9,30 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
-        android:indeterminate="false" />
-
+        android:indeterminate="false"/>
 
     <LinearLayout
+        android:id="@+id/layout_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:orientation="vertical"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible">
         <TextView
             android:id="@+id/tv_bill_error"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/error_connectivity"
-            android:textColor="@color/colorError"
-            android:visibility="visible"/>
-
+            android:textColor="@color/colorError"/>
         <TextView
             android:id="@+id/tv_bill_connectivity"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/connectivity_issues"
-            android:textColor="@color/colorError"
-            android:visibility="visible" />
+            android:textColor="@color/colorError"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

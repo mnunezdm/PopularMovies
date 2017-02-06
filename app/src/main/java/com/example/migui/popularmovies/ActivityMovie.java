@@ -64,6 +64,9 @@ public class ActivityMovie extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * <B>FUNCTION:</B> creates an Explicit Intent to share information about the film
+     */
     private void shareMovieInfo() {
         String shareMessage = getResources().getString(R.string.share_string);
         shareMessage = String.format(shareMessage, film.getTitle());

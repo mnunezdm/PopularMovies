@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,8 +29,7 @@ public class ActivityBillboard extends AppCompatActivity
     private RecyclerView rvMoviesList;
     private PosterAdapter posterAdapter;
     private ProgressBar pbFetchingMovies;
-    private TextView tvError;
-    private TextView tvConnectivity;
+    private LinearLayout linearLayout;
     private boolean byTopRated = true;
     private Toast toast;
 
@@ -50,8 +50,7 @@ public class ActivityBillboard extends AppCompatActivity
         posterAdapter = new PosterAdapter(this);
         rvMoviesList.setAdapter(posterAdapter);
 
-        tvError = (TextView) findViewById(R.id.tv_bill_error);
-        tvConnectivity = (TextView) findViewById(R.id.tv_bill_connectivity);
+        linearLayout = (LinearLayout) findViewById(R.id.layout_error);
 
         parseJSON(intent.getStringExtra("json"));
     }
@@ -122,8 +121,7 @@ public class ActivityBillboard extends AppCompatActivity
      * @param fetching if true fetching is in progress show PB hide RV
      */
     private void changeViews(boolean fetching) {
-        tvError.setVisibility(View.INVISIBLE);
-        tvConnectivity.setVisibility(View.INVISIBLE);
+        linearLayout.setVisibility(View.INVISIBLE);
         if (!fetching) {
             pbFetchingMovies.setVisibility(View.INVISIBLE);
             rvMoviesList.setVisibility(View.VISIBLE);
@@ -133,6 +131,9 @@ public class ActivityBillboard extends AppCompatActivity
         }
     }
 
+    /**
+     * <B>FUNCTION:</B> shows an error message
+     */
     private void errorConnection() {
         if (toast == null){
             toast = Toast.makeText(this, R.string.connectivity_issues, Toast.LENGTH_LONG);
@@ -140,8 +141,7 @@ public class ActivityBillboard extends AppCompatActivity
         toast.show();
         pbFetchingMovies.setVisibility(View.INVISIBLE);
         rvMoviesList.setVisibility(View.INVISIBLE);
-        tvError.setVisibility(View.VISIBLE);
-        tvConnectivity.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.VISIBLE);
     }
 
     /**
