@@ -18,15 +18,11 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityBillboard"></activity>
-        <activity
-            android:name=".ActivityMovie"
-            android:parentActivityName=".ActivityBillboard" />
-        <activity android:name=".asas"></activity>
+        <activity android:name=".ActivityBillboard"/>
+        <activity android:name=".ActivityMovie"/>
     </application>
 
 </manifest>

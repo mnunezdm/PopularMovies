@@ -14,4 +14,5 @@
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
     <string name="api_error">API error</string>
+    <string name="votes">votes</string>
 </resources>

@@ -39,12 +39,13 @@ class NetworkUtils {
     final static String IMAGE_BASE_URL =
             "https://image.tmdb.org/t/p/w500";
 
-    private final static String KEY = "YOUR_API_GOES_HERE"; // TODO api key!!
+    private final static String KEY = "YOUR_API_KEY_GOES_HERE"; // TODO api key!!
 
     static String queryFilms(String sort) throws IOException {
         Uri.Builder uriBuilder = Uri.parse(FILM_BASE_URL).buildUpon()
                 .appendPath(sort).appendQueryParameter("api_key", KEY);
         URL url = new URL(uriBuilder.build().toString());
+        System.out.println(url);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
@@ -57,19 +58,6 @@ class NetworkUtils {
                 return null;
         } finally {
             urlConnection.disconnect();
-        }
-    }
-
-    static boolean checkJSON(String json) {
-        try {
-            JSONObject object = new JSONObject(json);
-            if (object.getInt("status_code") != 0) {
-                System.out.println("error");
-                throw new JSONException("");
-            }
-            return true;
-        } catch (JSONException e) {
-            return false;
         }
     }
 

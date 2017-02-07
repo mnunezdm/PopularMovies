@@ -12,25 +12,35 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ActivityMovie extends AppCompatActivity {
     private Film film;
+
+    @BindView(R.id.text_original_title)
+    TextView textOriginalTitle;
+    @BindView(R.id.text_overview)
+    TextView textOverview;
+    @BindView(R.id.text_release_date)
+    TextView textDate;
+    @BindView(R.id.text_vote_average)
+    TextView textRating;
+    @BindView(R.id.text_title)
+    TextView textTitle;
+    @BindView(R.id.imageView3)
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        ButterKnife.bind(this);
+
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
         film = bundle.getParcelable("film");
-
-        if (film != null) {
-            TextView textOriginalTitle = (TextView) findViewById(R.id.text_original_title);
-            TextView textOverview = (TextView) findViewById(R.id.text_overview);
-            TextView textDate = (TextView) findViewById(R.id.text_release_date);
-            TextView textRating = (TextView) findViewById(R.id.text_vote_average);
-            TextView textTitle = (TextView) findViewById(R.id.text_title);
-            ImageView imageView = (ImageView) findViewById(R.id.imageView3);
-
+        if(film != null) {
             textTitle.setText(film.getTitle());
 
             if (film.getOrigTitle() != null) {
@@ -39,12 +49,11 @@ public class ActivityMovie extends AppCompatActivity {
             }
 
             textDate.setText(film.getReleaseDate());
-
-            textRating.setText(film.getRating());
-
+            textRating.setText(film.getRating(getResources().getString(R.string.votes)));
             textOverview.setText(film.getOverview());
 
-            Picasso.with(this).load(film.getImageURL()).into(imageView);
+            Picasso.with(this).load(film.getImageURL())
+                    .placeholder(R.drawable.unknown).error(R.drawable.error).into(imageView);
         }
     }
 
@@ -56,7 +65,7 @@ public class ActivityMovie extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_share:
                 shareMovieInfo();
                 return true;

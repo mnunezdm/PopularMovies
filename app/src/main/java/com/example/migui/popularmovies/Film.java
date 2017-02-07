@@ -25,7 +25,7 @@ class Film implements Parcelable {
         imageURL = NetworkUtils.IMAGE_BASE_URL + json.getString("poster_path");
     }
 
-    // ************ Getters ************
+    // *************** Getters ***************
 
     String getTitle() {
         return title;
@@ -49,8 +49,8 @@ class Film implements Parcelable {
         return releaseDate;
     }
 
-    String getRating() {
-        return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +")";
+    String getRating(String votes) {
+        return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +" " + votes +  ")";
     }
 
     @Override
@@ -58,7 +58,7 @@ class Film implements Parcelable {
         return title;
     }
 
-    // Parcelable Methods
+    // ************ Parcelable Methods ************
 
     private Film(Parcel in) {
         title = in.readString();
