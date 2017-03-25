@@ -2,7 +2,6 @@ package com.example.migui.popularmovies;
 
 import android.content.Intent;
 import android.support.v4.app.ShareCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,29 +12,21 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class ActivityMovie extends AppCompatActivity {
+public class ActivityMovie extends ActivityBase {
     private Film film;
 
-    @BindView(R.id.text_original_title)
-    TextView textOriginalTitle;
-    @BindView(R.id.text_overview)
-    TextView textOverview;
-    @BindView(R.id.text_release_date)
-    TextView textDate;
-    @BindView(R.id.text_vote_average)
-    TextView textRating;
-    @BindView(R.id.text_title)
-    TextView textTitle;
-    @BindView(R.id.imageView3)
-    ImageView imageView;
+    @BindView(R.id.text_original_title) TextView textOriginalTitle;
+    @BindView(R.id.text_overview) TextView textOverview;
+    @BindView(R.id.text_release_date) TextView textDate;
+    @BindView(R.id.text_vote_average) TextView textRating;
+    @BindView(R.id.text_title) TextView textTitle;
+    @BindView(R.id.imageView3) ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        ButterKnife.bind(this);
 
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
@@ -53,7 +44,7 @@ public class ActivityMovie extends AppCompatActivity {
             textOverview.setText(film.getOverview());
 
             Picasso.with(this).load(film.getImageURL())
-                    .placeholder(R.drawable.unknown).error(R.drawable.error).into(imageView);
+                    .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error).into(imageView);
         }
     }
 

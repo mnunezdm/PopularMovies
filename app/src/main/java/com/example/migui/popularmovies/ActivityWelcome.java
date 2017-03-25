@@ -18,10 +18,7 @@ public class ActivityWelcome extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        if (!isOnline(this))
-            showError(0);
-        else
-            new AsyncTaskMoviesQuery(this).execute("top_rated");
+        connect();
     }
 
     /**
@@ -47,6 +44,15 @@ public class ActivityWelcome extends AppCompatActivity
         Toast.makeText(this, R.string.connectivity_issues, Toast.LENGTH_LONG).show();
     }
 
+    void connect() {
+        if (!isOnline(this)) {
+            showError(0);
+        }
+        else {
+            new AsyncTaskMoviesQuery(this).execute("top_rated");
+        }
+    }
+
     /**
      * <B>FUNCTION:</B> calls ActivityBillboard with the info of the parameter
      *
@@ -63,4 +69,6 @@ public class ActivityWelcome extends AppCompatActivity
             finish();
         }
     }
+
+    // TODO http://stackoverflow.com/questions/11123621/running-code-in-main-thread-from-another-thread
 }

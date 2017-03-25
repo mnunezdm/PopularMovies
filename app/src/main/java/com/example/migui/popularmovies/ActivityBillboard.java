@@ -2,7 +2,6 @@ package com.example.migui.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -10,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,33 +19,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.example.migui.popularmovies.NetworkUtils.isOnline;
 
-public class ActivityBillboard extends AppCompatActivity
+public class ActivityBillboard extends ActivityBase
         implements PosterAdapter.PosterAdapterOnClickHandler,
         AsyncTaskMoviesQuery.AsyncTaskCompleteListener<String> {
 
-    @BindView(R.id.view_movies)
-    RecyclerView rvMoviesList;
-    @BindView(R.id.pb_fetching_indicator)
-    ProgressBar pbFetchingMovies;
-    @BindView(R.id.layout_error)
-    LinearLayout layoutErrors;
+    @BindView(R.id.view_movies) RecyclerView rvMoviesList;
+    @BindView(R.id.layout_fetching_indicator) LinearLayout pbFetchingMovies;
+    @BindView(R.id.layout_error) LinearLayout layoutErrors;
 
     private PosterAdapter posterAdapter;
     private static boolean byTopRated = true;
     private Toast toast;
     private static List<Film> films;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billboard);
-
-        ButterKnife.bind(this);
 
         GridLayoutManager layoutManager =
                 new GridLayoutManager(this, calculateNoOfColumns());
