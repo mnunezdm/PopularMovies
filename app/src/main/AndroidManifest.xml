@@ -23,6 +23,10 @@
         </activity>
         <activity android:name=".ActivityBillboard" />
         <activity android:name=".ActivityMovie" />
+        <provider
+            android:authorities="com.example.migui.popularmovies"
+            android:name="com.example.migui.popularmovies.data.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

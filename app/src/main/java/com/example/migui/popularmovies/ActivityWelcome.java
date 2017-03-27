@@ -69,6 +69,4 @@ public class ActivityWelcome extends AppCompatActivity
             finish();
         }
     }
-
-    // TODO http://stackoverflow.com/questions/11123621/running-code-in-main-thread-from-another-thread
 }
