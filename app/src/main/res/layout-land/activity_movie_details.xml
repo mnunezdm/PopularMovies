@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#A3A3A3"
                 android:textSize="18sp"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/text_release_date"
