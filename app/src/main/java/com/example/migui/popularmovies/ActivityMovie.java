@@ -1,6 +1,7 @@
 package com.example.migui.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.ShareCompat;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,24 +15,29 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 
 public class ActivityMovie extends ActivityBase {
-    private Film film;
 
-    @BindView(R.id.text_original_title) TextView textOriginalTitle;
-    @BindView(R.id.text_overview) TextView textOverview;
-    @BindView(R.id.text_release_date) TextView textDate;
-    @BindView(R.id.text_vote_average) TextView textRating;
-    @BindView(R.id.text_title) TextView textTitle;
-    @BindView(R.id.imageView3) ImageView imageView;
+    @BindView(R.id.text_original_title)
+    TextView textOriginalTitle;
+    @BindView(R.id.text_overview)
+    TextView textOverview;
+    @BindView(R.id.text_release_date)
+    TextView textDate;
+    @BindView(R.id.text_vote_average)
+    TextView textRating;
+    @BindView(R.id.text_title)
+    TextView textTitle;
+    @BindView(R.id.imageView3)
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        // TODO call asynk task
+        /*Intent intent = this.getIntent();
+        final Uri data = intent.getData();
 
-        Intent intent = this.getIntent();
-        Bundle bundle = intent.getExtras();
-        film = bundle.getParcelable("film");
-        if(film != null) {
+        if (film != null) {
             textTitle.setText(film.getTitle());
 
             if (film.getOrigTitle() != null) {
@@ -43,9 +49,9 @@ public class ActivityMovie extends ActivityBase {
             textRating.setText(film.getRating(getResources().getString(R.string.votes)));
             textOverview.setText(film.getOverview());
 
-            Picasso.with(this).load(film.getImageURL())
+            Picasso.with(this).load(NetworkUtils.IMAGE_BASE_URL + film.getPosterPath())
                     .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error).into(imageView);
-        }
+        }*/
     }
 
     @Override
@@ -69,7 +75,7 @@ public class ActivityMovie extends ActivityBase {
      */
     private void shareMovieInfo() {
         String shareMessage = getResources().getString(R.string.share_string);
-        shareMessage = String.format(shareMessage, film.getTitle());
+//        shareMessage = String.format(shareMessage, film.getTitle());
         ShareCompat.IntentBuilder.from(this)
                 .setType("text/plain").setText(shareMessage).startChooser();
     }

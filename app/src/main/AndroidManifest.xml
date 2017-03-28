@@ -11,17 +11,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ActivityWelcome"
-            android:label="@string/title_activity_welcome"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+
+        <activity android:name=".ActivityBillboard">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityBillboard" />
         <activity android:name=".ActivityMovie" />
         <provider
             android:authorities="com.example.migui.popularmovies"

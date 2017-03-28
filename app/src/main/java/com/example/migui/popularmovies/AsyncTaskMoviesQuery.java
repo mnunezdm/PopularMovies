@@ -2,32 +2,43 @@ package com.example.migui.popularmovies;
 
 import android.os.AsyncTask;
 
+
 import java.io.IOException;
 
 class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
     private AsyncTaskCompleteListener<String> listener;
+    private ActivityBillboard.SORT_TYPE sortType;
 
-    AsyncTaskMoviesQuery(AsyncTaskCompleteListener<String> listener) {
+    AsyncTaskMoviesQuery(AsyncTaskCompleteListener<String> listener, ActivityBillboard.SORT_TYPE sortType) {
         this.listener = listener;
+        this.sortType = sortType;
     }
 
     @Override
     protected String doInBackground(String... params) {
-        String searchUrl = params[0];
         String githubSearchResults = null;
         try {
-            githubSearchResults = NetworkUtils.queryFilms(searchUrl);
-        } catch (IOException ignored) {
-        }
+            switch (sortType) {
+                case POPULAR:
+                    githubSearchResults = NetworkUtils.queryFilms("popular");
+                    break;
+                case TOP_RATED:
+                    githubSearchResults = NetworkUtils.queryFilms("top_rated");
+                    break;
+                case UNIQUE:
+                    // TODO
+                    break;
+            }
+        } catch (IOException ignored) {}
         return githubSearchResults;
     }
 
     @Override
     protected void onPostExecute(String s) {
-        listener.taskCompleted(s);
+        listener.taskCompleted(sortType, s);
     }
 
     interface AsyncTaskCompleteListener<E> {
-        void taskCompleted(E s);
+        void taskCompleted(ActivityBillboard.SORT_TYPE sort_type, E s);
     }
 }

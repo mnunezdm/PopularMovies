@@ -1,16 +1,21 @@
 package com.example.migui.popularmovies;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.example.migui.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterViewHolder> {
-    private List<Film> filmList;
+    private Cursor cursor;
     private Context context;
     private PosterAdapterOnClickHandler clickHandler;
 
@@ -31,20 +36,36 @@ class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterView
 
     @Override
     public void onBindViewHolder(AdapterPosterViewHolder holder, int position) {
-        Film film = filmList.get(position);
-        Picasso.with(context).load(film.getImageURL())
-                .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error).into(holder.rvPosterImageView);
+        int idIndex = cursor.getColumnIndex(MovieContract.MovieEntry._ID);
+
+        cursor.moveToPosition(position);
+        int posterIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_FRONT_POSTER);
+
+        final int id = cursor.getInt(idIndex);
+        holder.itemView.setTag(id);
+
+        String posterUrl = cursor.getString(posterIndex);
+
+        //Set values
+        holder.itemView.setTag(0);
+        Picasso.with(context).load(NetworkUtils.IMAGE_BASE_URL + posterUrl)
+                .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error)
+                .into(holder.rvPosterImageView);
     }
 
     @Override
     public int getItemCount() {
-        if(filmList == null) return 0;
-        return filmList.size();
+        if (cursor == null) return 0;
+        return cursor.getCount();
     }
 
-    void setFilmList(List<Film> filmList) {
-        this.filmList = filmList;
-        notifyDataSetChanged();
+    void swapCursor(Cursor cursor) {
+        if (this.cursor != cursor) {
+            this.cursor = cursor;
+            if (cursor != null) {
+                notifyDataSetChanged();
+            }
+        }
     }
 
     class AdapterPosterViewHolder extends RecyclerView.ViewHolder
@@ -60,12 +81,14 @@ class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterView
 
         @Override
         public void onClick(View v) {
-            Film filmToExpand = filmList.get(getAdapterPosition());
-            clickHandler.onClick(filmToExpand);
+            int adapterPosition = getAdapterPosition();
+            cursor.moveToPosition(adapterPosition);
+
+            clickHandler.onClick(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry._ID)));
         }
     }
 
     interface PosterAdapterOnClickHandler {
-        void onClick(Film filmToExpand);
+        void onClick(String id);
     }
 }

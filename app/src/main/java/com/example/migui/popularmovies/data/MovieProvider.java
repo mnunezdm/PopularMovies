@@ -9,13 +9,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/**
- * Created by migui on 27/03/17.
- */
-
 public class MovieProvider extends ContentProvider {
     public static final int CODE_MOVIES = 100;
-    public static final int CODE_MOVIE = 101;
+    public static final int CODE_MOVIES_POPULAR = 101;
+    public static final int CODE_MOVIES_TOP_RATED = 102;
+    public static final int CODE_MOVIES_FAVOURITE = 103;
+    public static final int CODE_MOVIES_UNIQUE = 104;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MovieDBHelper mOpenHelper;
@@ -23,7 +22,14 @@ public class MovieProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
         UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES, CODE_MOVIES);
-        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES + "/#", CODE_MOVIE);
+        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES + "/#",
+                CODE_MOVIES_UNIQUE);
+        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES + "/" +
+                MovieContract.PATH_POPULAR, CODE_MOVIES_POPULAR);
+        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES + "/" +
+                MovieContract.PATH_TOP_RATED, CODE_MOVIES_TOP_RATED);
+        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIES + "/" +
+                MovieContract.PATH_FAVOURITES, CODE_MOVIES_FAVOURITE);
         return sUriMatcher;
     }
 
@@ -38,19 +44,12 @@ public class MovieProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        switch (sUriMatcher.match(uri)){
-            case CODE_MOVIES:
-                db.query(MovieContract.MovieEntry.TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            case CODE_MOVIE:
-                db.query(MovieContract.MovieEntry.TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            default:
-                throw new UnsupportedOperationException("You can query " + uri);
-        }
-        return null;
+        int uriType = sUriMatcher.match(uri);
+        if (uriType >= 100 && uriType <= 104)
+            return db.query(MovieContract.MovieEntry.TABLE_NAME, projection, selection, selectionArgs,
+                    null, null, sortOrder);
+        else
+            throw new UnsupportedOperationException("You can query " + uri);
     }
 
     @Override
@@ -62,33 +61,37 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
-        switch (sUriMatcher.match(uri)) {
-
-            case CODE_MOVIES:
-                SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-                db.beginTransaction();
-                int rowsInserted = 0;
-                try {
+        int uriType = sUriMatcher.match(uri);
+        if (uriType == CODE_MOVIES_POPULAR || uriType == CODE_MOVIES_TOP_RATED) {
+            SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+            db.beginTransaction();
+            int rowsInserted = 0;
+            try {
+                if (uriType == CODE_MOVIES_POPULAR)
                     for (ContentValues value : values) {
+                        value.put(MovieContract.MovieEntry.COLUMN_POSITION_POP, rowsInserted);
                         long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
                             rowsInserted++;
                         }
                     }
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
-
-                if (rowsInserted > 0) {
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }
-
-                return rowsInserted;
-
-            default:
-                return super.bulkInsert(uri, values);
-        }
+                else
+                    for (ContentValues value : values) {
+                        value.put(MovieContract.MovieEntry.COLUMN_POSITION_TOP, rowsInserted);
+                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            rowsInserted++;
+                        }
+                    }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            if (rowsInserted > 0)
+                getContext().getContentResolver().notifyChange(uri, null);
+            return rowsInserted;
+        } else
+            return super.bulkInsert(uri, values);
     }
 
     @Nullable
