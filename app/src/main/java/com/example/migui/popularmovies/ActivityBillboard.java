@@ -84,6 +84,26 @@ public class ActivityBillboard extends ActivityBase
         return true;
     }
 
+    public boolean onGroupMenuSelected(MenuItem item) {
+        menuItem.setTitle(item.toString());
+        item.setChecked(true);
+        switch (item.getItemId()) {
+            case R.id.menu_sort_pop:
+                sortMovies(SORT_TYPE.POPULAR);
+                return true;
+            case R.id.menu_sort_top:
+                sortMovies(SORT_TYPE.TOP_RATED);
+                return true;
+            case R.id.menu_all:
+                sortMovies(SORT_TYPE.ALL);
+                return true;
+            case R.id.menu_favourites:
+                sortMovies(SORT_TYPE.FAVOURITES);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * <B>FUNCTION:</B> starts a ActivityMovie with filmToExpand
      */
