@@ -15,4 +15,6 @@
     <string name="popular">Popular</string>
     <string name="api_error">API error</string>
     <string name="votes">votes</string>
+    <string name="favourites">Favourites</string>
+    <string name="all">All</string>
 </resources>
