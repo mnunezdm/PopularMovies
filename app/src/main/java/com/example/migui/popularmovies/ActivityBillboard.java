@@ -56,7 +56,8 @@ public class ActivityBillboard extends ActivityBase
 
     private PosterAdapter posterAdapter;
     private Toast toast;
-    private SORT_TYPE sort;
+    private SORT_TYPE sort = SORT_TYPE.ALL;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class ActivityBillboard extends ActivityBase
         posterAdapter = new PosterAdapter(this); // TODO
         rvMoviesList.setAdapter(posterAdapter); // TODO
 
-        sortMovies(SORT_TYPE.POPULAR);
+        sortMovies(SORT_TYPE.ALL);
 
         getLoaderManager().initLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
     }
@@ -83,12 +84,30 @@ public class ActivityBillboard extends ActivityBase
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_billboard, menu);
-        menuItem = menu.findItem(R.id.menu_sort);
+        this.menu = menu;
+        switch (sort) {
+            case POPULAR:
+                menu.findItem(R.id.menu_sort).setTitle(getString(R.string.popular));
+                menu.findItem(R.id.menu_sort_pop).setChecked(true);
+                break;
+            case TOP_RATED:
+                menu.findItem(R.id.menu_sort).setTitle(getString(R.string.top_rated));
+                menu.findItem(R.id.menu_sort_top).setChecked(true);
+                break;
+            case ALL:
+                menu.findItem(R.id.menu_sort).setTitle(getString(R.string.all));
+                menu.findItem(R.id.menu_all).setChecked(true);
+                break;
+            case FAVOURITES:
+                menu.findItem(R.id.menu_sort).setTitle(getString(R.string.favourites));
+                menu.findItem(R.id.menu_favourites).setChecked(true);
+                break;
+        }
         return true;
     }
 
     public boolean onGroupMenuSelected(MenuItem item) {
-        menuItem.setTitle(item.toString());
+        menu.findItem(R.id.menu_sort).setTitle(item.toString());
         item.setChecked(true);
         switch (item.getItemId()) {
             case R.id.menu_sort_pop:
@@ -208,7 +227,6 @@ public class ActivityBillboard extends ActivityBase
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        rvMoviesList.smoothScrollToPosition(0);
         posterAdapter.swapCursor(data);
         changeViews(false);
     }
