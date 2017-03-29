@@ -20,13 +20,13 @@ class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
         try {
             switch (sortType) {
                 case POPULAR:
-                    githubSearchResults = NetworkUtils.queryFilms("popular");
+                    githubSearchResults = NetworkUtils.queryFilms(sortType);
                     break;
                 case TOP_RATED:
-                    githubSearchResults = NetworkUtils.queryFilms("top_rated");
+                    githubSearchResults = NetworkUtils.queryFilms(sortType);
                     break;
                 case UNIQUE:
-                    // TODO
+                    githubSearchResults = NetworkUtils.queryDetails(params[0]);
                     break;
             }
         } catch (IOException ignored) {}

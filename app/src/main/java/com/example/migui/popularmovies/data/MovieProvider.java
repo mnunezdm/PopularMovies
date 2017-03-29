@@ -45,9 +45,14 @@ public class MovieProvider extends ContentProvider {
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
         int uriType = sUriMatcher.match(uri);
-        if (uriType >= 100 && uriType <= 104)
-            return db.query(MovieContract.MovieEntry.TABLE_NAME, projection, selection, selectionArgs,
-                    null, null, sortOrder);
+        if (uriType >= 100 && uriType < 104)
+            return db.query(MovieContract.MovieEntry.TABLE_NAME, projection, selection,
+                    selectionArgs, null, null, sortOrder);
+        else if (uriType == 104) {
+            String id = uri.getPathSegments().get(1);
+            return db.query(MovieContract.MovieEntry.TABLE_NAME, projection, "_id=?",
+                    new String[]{id}, null, null, null, "1");
+        }
         else
             throw new UnsupportedOperationException("You can query " + uri);
     }

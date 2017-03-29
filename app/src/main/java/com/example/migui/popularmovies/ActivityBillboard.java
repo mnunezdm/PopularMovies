@@ -41,15 +41,18 @@ public class ActivityBillboard extends ActivityBase
         POPULAR, TOP_RATED, ALL, FAVOURITES, UNIQUE
     }
 
-    private static final int TASK_LOADER_ID = 1;
+    private static final int MOVIES_LOADER_ID = 1;
     private static final String[] MAIN_PROJECTION = {
             MovieContract.MovieEntry.COLUMN_FRONT_POSTER,
             MovieContract.MovieEntry._ID
     };
 
-    @BindView(R.id.view_movies) RecyclerView rvMoviesList;
-    @BindView(R.id.layout_fetching_indicator) LinearLayout pbFetchingMovies;
-    @BindView(R.id.layout_error) LinearLayout layoutErrors;
+    @BindView(R.id.view_movies)
+    RecyclerView rvMoviesList;
+    @BindView(R.id.layout_fetching_indicator)
+    LinearLayout pbFetchingMovies;
+    @BindView(R.id.layout_error)
+    LinearLayout layoutErrors;
 
     private PosterAdapter posterAdapter;
     private Toast toast;
@@ -68,13 +71,13 @@ public class ActivityBillboard extends ActivityBase
 
         sortMovies(SORT_TYPE.POPULAR);
 
-        getLoaderManager().initLoader(TASK_LOADER_ID, null, ActivityBillboard.this);
+        getLoaderManager().initLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+        getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
     }
 
     @Override
@@ -122,7 +125,7 @@ public class ActivityBillboard extends ActivityBase
         changeViews(true);
         this.sort = sort;
         if (!isOnline(this) || sort == SORT_TYPE.ALL || sort == SORT_TYPE.FAVOURITES)
-            getLoaderManager().restartLoader(TASK_LOADER_ID, null, ActivityBillboard.this);
+            getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
         else
             new AsyncTaskMoviesQuery(this, sort).execute();
     }
@@ -178,7 +181,7 @@ public class ActivityBillboard extends ActivityBase
             }
             getContentResolver().bulkInsert(MovieContract.MovieEntry.getUri(sort_type),
                     cvs.toArray(new ContentValues[cvs.size()]));
-            getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+            getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
         } catch (JSONException e) {
             errorConnection();
         }
@@ -187,7 +190,7 @@ public class ActivityBillboard extends ActivityBase
     @Override
     public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
         switch (id) {
-            case TASK_LOADER_ID:
+            case MOVIES_LOADER_ID:
                 String selection = MovieContract.MovieEntry.getSelection(sort);
                 String sortOrder = MovieContract.MovieEntry.getOrderBy(sort);
                 Uri uri = MovieContract.MovieEntry.getUri(sort);

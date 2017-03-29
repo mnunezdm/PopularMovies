@@ -30,10 +30,47 @@ class Film {
         voteNumber = json.getInt("vote_count");
         voteAverage = json.getDouble("vote_average");
         posterPath = json.getString("poster_path");
+    }
 
+    Film(Cursor cursor) {
+        cursor.moveToFirst();
+        id = cursor.getLong(cursor.getColumnIndex(MovieEntry._ID));
+        title =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE));
+        origTitle =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_ORIGINAL_TITLE));
+        overview =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_OVERVIEW));
+        voteAverage =  cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE));
+        voteNumber =  cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_VOTE_NUMBER));
+        posterPath =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_FRONT_POSTER));
+        releaseDate =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE));
     }
 
     // *************** Getters ***************
+
+
+    String getTitle() {
+        return title;
+    }
+
+    String getOrigTitle() {
+        return origTitle;
+    }
+
+    String getOverview() {
+        return overview;
+    }
+
+    String getPosterPath() {
+        return posterPath;
+    }
+
+    String getReleaseDate() {
+        return releaseDate;
+    }
+
+    long getId() {
+
+        return id;
+    }
 
     ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
@@ -46,5 +83,9 @@ class Film {
         cv.put(MovieEntry.COLUMN_FRONT_POSTER, posterPath);
         cv.put(MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
         return cv;
+    }
+
+    String getRating(String votes) {
+        return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +" " + votes +  ")";
     }
 }
