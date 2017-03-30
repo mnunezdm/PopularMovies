@@ -2,7 +2,6 @@ package com.example.migui.popularmovies;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +11,7 @@ import android.widget.ImageView;
 import com.example.migui.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
-class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterViewHolder> {
+class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterAdapterViewHolder> {
     private Cursor cursor;
     private Context context;
     private PosterAdapterOnClickHandler clickHandler;
@@ -25,17 +22,17 @@ class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterView
     }
 
     @Override
-    public AdapterPosterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PosterAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.rv_movie_posters;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
-        return new AdapterPosterViewHolder(view);
+        return new PosterAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(AdapterPosterViewHolder holder, int position) {
+    public void onBindViewHolder(PosterAdapterViewHolder holder, int position) {
         int idIndex = cursor.getColumnIndex(MovieContract.MovieEntry._ID);
 
         cursor.moveToPosition(position);
@@ -46,8 +43,6 @@ class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterView
 
         String posterUrl = cursor.getString(posterIndex);
 
-        //Set values
-        holder.itemView.setTag(0);
         Picasso.with(context).load(NetworkUtils.IMAGE_BASE_URL + posterUrl)
                 .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error)
                 .into(holder.rvPosterImageView);
@@ -68,12 +63,12 @@ class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.AdapterPosterView
         }
     }
 
-    class AdapterPosterViewHolder extends RecyclerView.ViewHolder
+    class PosterAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        ImageView rvPosterImageView;
+        private ImageView rvPosterImageView;
 
 
-        AdapterPosterViewHolder(View view) {
+        PosterAdapterViewHolder(View view) {
             super(view);
             rvPosterImageView = (ImageView) view.findViewById(R.id.rv_movie_poster);
             view.setOnClickListener(this);

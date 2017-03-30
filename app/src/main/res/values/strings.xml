@@ -17,4 +17,9 @@
     <string name="votes">votes</string>
     <string name="favourites">Favourites</string>
     <string name="all">All</string>
+    <string name="overview">Overview</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews">Reviews</string>
+    <string name="offline_movies">Offline couldn\'t fetch reviews and videos</string>
+    <string name="trailer_thumbail">trailer thumbail</string>
 </resources>

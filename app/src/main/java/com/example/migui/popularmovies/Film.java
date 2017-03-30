@@ -2,9 +2,6 @@ package com.example.migui.popularmovies;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +52,7 @@ class Film {
     }
 
     String getOrigTitle() {
-        return origTitle;
+        return (origTitle.equals(title))? null : origTitle;
     }
 
     String getOverview() {
@@ -75,7 +72,7 @@ class Film {
         return id;
     }
 
-    public boolean isFavourite() {
+    boolean isFavourite() {
         return favourite;
     }
 

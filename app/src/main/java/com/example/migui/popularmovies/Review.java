@@ -12,4 +12,11 @@ class Review {
         content = json.getString("content");
     }
 
+    String getAuthor() {
+        return author;
+    }
+
+    String getContent() {
+        return content;
+    }
 }

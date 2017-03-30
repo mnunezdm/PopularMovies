@@ -1,13 +1,18 @@
 package com.example.migui.popularmovies;
 
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.ShareCompat;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +38,8 @@ import butterknife.BindView;
 
 public class ActivityMovie extends ActivityBase
         implements AsyncTaskMoviesQuery.AsyncTaskCompleteListener<String>,
-        LoaderManager.LoaderCallbacks<Cursor>, OnLikeListener {
+        LoaderManager.LoaderCallbacks<Cursor>, OnLikeListener,
+        TrailersAdapter.TrailerAdapterOnClickListener {
 
     @BindView(R.id.text_original_title)
     TextView textOriginalTitle;
@@ -49,6 +55,10 @@ public class ActivityMovie extends ActivityBase
     ImageView imageView;
     @BindView(R.id.button_like)
     LikeButton likeButton;
+    @BindView(R.id.rv_movies)
+    RecyclerView rvTrailers;
+    @BindView(R.id.rv_reviews)
+    RecyclerView rvReviews;
 
     private static final int MOVIE_LOADER_ID = 2;
     private static final String[] MOVIE_PROJECTION = {
@@ -63,8 +73,6 @@ public class ActivityMovie extends ActivityBase
             MovieContract.MovieEntry.COLUMN_FAVOURITE,
     };
 
-    private List<Trailer> trailers;
-    private List<Review> reviews;
     private Uri uriFavourite;
 
     @Override
@@ -136,7 +144,7 @@ public class ActivityMovie extends ActivityBase
             new AsyncTaskMoviesQuery(this, ActivityBillboard.SORT_TYPE.UNIQUE)
                     .execute(String.valueOf(film.getId()));
         else
-            Toast.makeText(this, "Offline couldnt fetch reviews and videos", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.offline_movies), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -170,27 +178,60 @@ public class ActivityMovie extends ActivityBase
             JSONArray arrayJson;
             String jsonString;
             String[] splitedResponse = jsonConcat.split(":#:#:");
+
             jsonString = splitedResponse[0];
             if (jsonString != null) {
-                trailers = new ArrayList<>();
+                List<Trailer> trailers = new ArrayList<>();
                 arrayJson = new JSONObject(jsonString).getJSONArray("results");
                 for (int i = 0; i < arrayJson.length(); i++)
                     trailers.add(new Trailer(arrayJson.getJSONObject(i)));
-                Toast.makeText(this, trailers.size() + " TRAILERS", Toast.LENGTH_SHORT).show();
-            } else Toast.makeText(this, "EMPTY TRAILERS RESPONSE", Toast.LENGTH_SHORT).show();
+                if (trailers.size() != 0)
+                    initializeTrailerRv(trailers);
+            }
 
             jsonString = splitedResponse[1];
             if (jsonString != null) {
-                reviews = new ArrayList<>();
+                List<Review> reviews = new ArrayList<>();
                 arrayJson = new JSONObject(jsonString).getJSONArray("results");
                 for (int i = 0; i < arrayJson.length(); i++)
                     reviews.add(new Review(arrayJson.getJSONObject(i)));
-                Toast.makeText(this, reviews.size() + " REVIEWS", Toast.LENGTH_SHORT).show();
-            } else Toast.makeText(this, "EMPTY REVIEWS RESPONSE", Toast.LENGTH_SHORT).show();
+                if (reviews.size() != 0)
+                   initializeReviewRv(reviews);
+            }
 
-        } catch (JSONException e) {
-            Toast.makeText(this, "EXCEPTION SUU", Toast.LENGTH_SHORT).show();
-//            errorConnection();
+        } catch (JSONException ignored) {}
+    }
+
+    private void initializeTrailerRv (List<Trailer> trailers) {
+        TrailersAdapter trailersAdapter = new TrailersAdapter(this, this);
+        if (trailersAdapter.setTrailers(trailers) > 0) {
+            rvTrailers.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            rvTrailers.setAdapter(trailersAdapter);
+            rvTrailers.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void initializeReviewRv (List<Review> reviews) {
+        ReviewsAdapter reviewsAdapter = new ReviewsAdapter();
+        if (reviewsAdapter.setReviews(reviews) > 0) {
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvReviews.getContext(),
+                        DividerItemDecoration.VERTICAL);
+            rvReviews.addItemDecoration(dividerItemDecoration);
+            rvReviews.setLayoutManager(new LinearLayoutManager(this));
+            rvReviews.setAdapter(reviewsAdapter);
+            rvReviews.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onClick(String youtubeKey) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + youtubeKey));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + youtubeKey));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
         }
     }
 

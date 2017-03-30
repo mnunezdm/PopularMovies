@@ -70,7 +70,6 @@ public class MovieProvider extends ContentProvider {
                     new String[]{id});
         } else
             throw new UnsupportedOperationException("You can't update " + uri);
-        // TODO implement update
     }
 
     @Override
