@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ class Film {
     private int voteNumber;
     private String posterPath;
     private String releaseDate;
+    private boolean favourite;
 
     Film(JSONObject json) throws JSONException {
         id = json.getLong("id");
@@ -42,6 +44,7 @@ class Film {
         voteNumber =  cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_VOTE_NUMBER));
         posterPath =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_FRONT_POSTER));
         releaseDate =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE));
+        favourite = cursor.getInt(cursor.getColumnIndex(MovieEntry.COLUMN_FAVOURITE)) != 0;
     }
 
     // *************** Getters ***************
@@ -72,6 +75,10 @@ class Film {
         return id;
     }
 
+    public boolean isFavourite() {
+        return favourite;
+    }
+
     ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
         cv.put(MovieEntry._ID, id);
@@ -88,4 +95,6 @@ class Film {
     String getRating(String votes) {
         return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +" " + votes +  ")";
     }
+
+
 }

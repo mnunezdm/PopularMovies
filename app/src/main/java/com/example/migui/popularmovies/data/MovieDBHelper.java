@@ -9,7 +9,7 @@ class MovieDBHelper extends SQLiteOpenHelper{
 
     private static  final String DATABASE_NAME = "movie.db";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     MovieDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -28,7 +28,7 @@ class MovieDBHelper extends SQLiteOpenHelper{
                 MovieEntry.COLUMN_VOTE_AVERAGE      + " DECIMAL NOT NULL, "  +
                 MovieEntry.COLUMN_VOTE_NUMBER       + " DECIMAL NOT NULL, "  +
                 MovieEntry.COLUMN_OVERVIEW          + " STRING NOT NULL, "   +
-                MovieEntry.COLUMN_FAVOURITE         + " INTEGER DEFAULT -1, " +
+                MovieEntry.COLUMN_FAVOURITE         + " INTEGER DEFAULT 0, " +
                 MovieEntry.COLUMN_POSITION_TOP      + " INTEGER DEFAULT -1, " +
                 MovieEntry.COLUMN_POSITION_POP      + " INTEGER DEFAULT -1"   +
 //                MovieEntry.COLUMN_REVIEWS           + " STRING, "   +

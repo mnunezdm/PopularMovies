@@ -3,12 +3,12 @@ package com.example.migui.popularmovies;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.ShareCompat;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.migui.popularmovies.data.MovieContract;
 
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -31,7 +33,7 @@ import butterknife.BindView;
 
 public class ActivityMovie extends ActivityBase
         implements AsyncTaskMoviesQuery.AsyncTaskCompleteListener<String>,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, OnLikeListener {
 
     @BindView(R.id.text_original_title)
     TextView textOriginalTitle;
@@ -45,6 +47,8 @@ public class ActivityMovie extends ActivityBase
     TextView textTitle;
     @BindView(R.id.imageView3)
     ImageView imageView;
+    @BindView(R.id.button_like)
+    LikeButton likeButton;
 
     private static final int MOVIE_LOADER_ID = 2;
     private static final String[] MOVIE_PROJECTION = {
@@ -61,7 +65,7 @@ public class ActivityMovie extends ActivityBase
 
     private List<Trailer> trailers;
     private List<Review> reviews;
-    private long id;
+    private Uri uriFavourite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +88,6 @@ public class ActivityMovie extends ActivityBase
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * <B>FUNCTION:</B> creates an Explicit Intent to share information about the film
-     */
-    private void shareMovieInfo() {
-        String shareMessage = getResources().getString(R.string.share_string);
-//        shareMessage = String.format(shareMessage, film.getTitle());
-        ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain").setText(shareMessage).startChooser();
     }
 
     @Override
@@ -129,12 +123,34 @@ public class ActivityMovie extends ActivityBase
         Picasso.with(this).load(NetworkUtils.IMAGE_BASE_URL + film.getPosterPath())
                 .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error).into(imageView);
 
-        id = film.getId();
+        Log.d(this.toString(), String.valueOf(film.isFavourite()));
+        likeButton.setLiked(film.isFavourite());
+        likeButton.setOnLikeListener(this);
+
+        long id = film.getId();
+
+        uriFavourite = MovieContract.MovieEntry.getUri(ActivityBillboard.SORT_TYPE.UNIQUE).buildUpon().
+                appendPath(String.valueOf(id)).appendPath(MovieContract.PATH_FAVOURITES).build();
+
         if (NetworkUtils.isOnline(this))
             new AsyncTaskMoviesQuery(this, ActivityBillboard.SORT_TYPE.UNIQUE)
                     .execute(String.valueOf(film.getId()));
         else
             Toast.makeText(this, "Offline couldnt fetch reviews and videos", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void liked(LikeButton likeButton) {
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_FAVOURITE, 1);
+        getContentResolver().update(uriFavourite, cv, null, null);
+    }
+
+    @Override
+    public void unLiked(LikeButton likeButton) {
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_FAVOURITE, 0);
+        getContentResolver().update(uriFavourite, cv, null, null);
     }
 
     @Override
@@ -146,9 +162,7 @@ public class ActivityMovie extends ActivityBase
         if (sort_type == ActivityBillboard.SORT_TYPE.UNIQUE) {
             parseJson(s);
         }
-        Uri uri = MovieContract.MovieEntry.getUri(ActivityBillboard.SORT_TYPE.UNIQUE).buildUpon().
-                appendPath(String.valueOf(id)).appendPath(MovieContract.PATH_FAVOURITES).build();
-        getContentResolver().update(uri, null,null,null);
+
     }
 
     void parseJson(String jsonConcat) {
@@ -178,5 +192,12 @@ public class ActivityMovie extends ActivityBase
             Toast.makeText(this, "EXCEPTION SUU", Toast.LENGTH_SHORT).show();
 //            errorConnection();
         }
+    }
+
+    private void shareMovieInfo() {
+        String shareMessage = getResources().getString(R.string.share_string);
+        shareMessage = String.format(shareMessage, textTitle.getText());
+        ShareCompat.IntentBuilder.from(this)
+                .setType("text/plain").setText(shareMessage).startChooser();
     }
 }

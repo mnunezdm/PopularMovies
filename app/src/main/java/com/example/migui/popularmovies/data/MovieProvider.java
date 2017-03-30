@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class MovieProvider extends ContentProvider {
     public static final int CODE_MOVIES = 100;
@@ -67,8 +66,6 @@ public class MovieProvider extends ContentProvider {
         if (sUriMatcher.match(uri) == CODE_MOVIES_UNIQUE_FAV) {
             SQLiteDatabase db = mOpenHelper.getWritableDatabase();
             String id = uri.getPathSegments().get(1);
-            values = new ContentValues();
-            values.put(MovieContract.MovieEntry.COLUMN_FAVOURITE, 1);
             return db.update(MovieContract.MovieEntry.TABLE_NAME, values, "_id=?",
                     new String[]{id});
         } else
@@ -93,7 +90,8 @@ public class MovieProvider extends ContentProvider {
             } finally {
                 db.endTransaction();
             }
-            getContext().getContentResolver().notifyChange(uri, null);
+            if (getContext() != null)
+                getContext().getContentResolver().notifyChange(uri, null);
             return rowsInserted;
         } else
             return super.bulkInsert(uri, values);

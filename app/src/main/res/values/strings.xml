@@ -9,7 +9,7 @@
     <string name="welcome_to">Welcome to</string>
     <string name="error_connectivity">ERROR</string>
     <string name="connectivity_issues">Connectivity Issues</string>
-    <string name="share_string">Have a look to %1$s #PopularMovies</string>
+    <string name="share_string">Have a look to \'%1$s\' #PopularMovies</string>
     <string name="movie_poster">Movie Poster</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>

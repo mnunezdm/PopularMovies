@@ -68,7 +68,7 @@ public class ActivityBillboard extends ActivityBase
         posterAdapter = new PosterAdapter(this);
         rvMoviesList.setAdapter(posterAdapter);
 
-        sortMovies(SORT_TYPE.ALL);
+        sortMovies(SORT_TYPE.POPULAR);
 
         getLoaderManager().initLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
     }
