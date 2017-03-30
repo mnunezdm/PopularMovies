@@ -6,6 +6,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.ShareCompat;
 import android.os.Bundle;
 import android.view.Menu;
@@ -58,8 +59,9 @@ public class ActivityMovie extends ActivityBase
             MovieContract.MovieEntry.COLUMN_FAVOURITE,
     };
 
-    List<Trailer> trailers;
-    List<Review> reviews;
+    private List<Trailer> trailers;
+    private List<Review> reviews;
+    private long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,7 @@ public class ActivityMovie extends ActivityBase
         Picasso.with(this).load(NetworkUtils.IMAGE_BASE_URL + film.getPosterPath())
                 .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error).into(imageView);
 
+        id = film.getId();
         if (NetworkUtils.isOnline(this))
             new AsyncTaskMoviesQuery(this, ActivityBillboard.SORT_TYPE.UNIQUE)
                     .execute(String.valueOf(film.getId()));
@@ -143,6 +146,9 @@ public class ActivityMovie extends ActivityBase
         if (sort_type == ActivityBillboard.SORT_TYPE.UNIQUE) {
             parseJson(s);
         }
+        Uri uri = MovieContract.MovieEntry.getUri(ActivityBillboard.SORT_TYPE.UNIQUE).buildUpon().
+                appendPath(String.valueOf(id)).appendPath(MovieContract.PATH_FAVOURITES).build();
+        getContentResolver().update(uri, null,null,null);
     }
 
     void parseJson(String jsonConcat) {

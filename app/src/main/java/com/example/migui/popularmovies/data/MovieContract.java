@@ -10,7 +10,7 @@ public class MovieContract {
     static final String  CONTENT_AUTHORITY       = "com.example.migui.popularmovies";
     private static final Uri BASE_CONTENT_URI    = Uri.parse("content://" + CONTENT_AUTHORITY);
     static final String  PATH_MOVIES             = "movies";
-    static final String  PATH_FAVOURITES         = "favourites";
+    public static final String  PATH_FAVOURITES         = "favourites";
     static final String  PATH_TOP_RATED          = "top_rated";
     static final String  PATH_POPULAR            = "popular";
 

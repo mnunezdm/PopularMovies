@@ -35,8 +35,6 @@ public class ActivityBillboard extends ActivityBase
         AsyncTaskMoviesQuery.AsyncTaskCompleteListener<String>,
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private MenuItem menuItem;
-
     public enum SORT_TYPE {
         POPULAR, TOP_RATED, ALL, FAVOURITES, UNIQUE
     }
@@ -67,8 +65,8 @@ public class ActivityBillboard extends ActivityBase
         rvMoviesList.setLayoutManager(new GridLayoutManager(this, calculateNoOfColumns()));
         rvMoviesList.setHasFixedSize(true);
 
-        posterAdapter = new PosterAdapter(this); // TODO
-        rvMoviesList.setAdapter(posterAdapter); // TODO
+        posterAdapter = new PosterAdapter(this);
+        rvMoviesList.setAdapter(posterAdapter);
 
         sortMovies(SORT_TYPE.ALL);
 
