@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.content.CursorLoader;
 import android.app.LoaderManager;
+import android.os.Parcelable;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class ActivityBillboard extends ActivityBase
             MovieContract.MovieEntry._ID
     };
     private final String SORT_CRITERIA = "sort_criteria";
+    private final String POSITION = "position";
 
     @BindView(R.id.view_movies)
     RecyclerView rvMoviesList;
@@ -55,16 +57,25 @@ public class ActivityBillboard extends ActivityBase
     @BindView(R.id.layout_error)
     LinearLayout layoutErrors;
 
+
+    private Parcelable layoutStateSaved;
     private PosterAdapter posterAdapter;
     private Toast toast;
     private Menu menu;
+    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_billboard);
 
-        rvMoviesList.setLayoutManager(new GridLayoutManager(this, calculateNoOfColumns()));
+        if (savedInstanceState != null)
+            layoutStateSaved = savedInstanceState.getParcelable(POSITION);
+
+        layoutManager =
+                new GridLayoutManager(this, calculateNoOfColumns());
+
+        rvMoviesList.setLayoutManager(layoutManager);
         rvMoviesList.setHasFixedSize(true);
 
         posterAdapter = new PosterAdapter(this);
@@ -260,7 +271,18 @@ public class ActivityBillboard extends ActivityBase
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         posterAdapter.swapCursor(data);
+        posterAdapter.notifyDataSetChanged();
+        if (layoutStateSaved != null) {
+            layoutManager.onRestoreInstanceState(layoutStateSaved);
+            layoutStateSaved = null;
+        }
         changeViews(false);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(POSITION, layoutManager.onSaveInstanceState());
     }
 
     @Override
@@ -272,7 +294,6 @@ public class ActivityBillboard extends ActivityBase
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         switch (key) {
             case SORT_CRITERIA:
-                rvMoviesList.smoothScrollToPosition(0);
                 getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
         }
     }
