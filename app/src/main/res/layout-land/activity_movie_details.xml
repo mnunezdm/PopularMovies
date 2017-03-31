@@ -122,6 +122,10 @@
             android:id="@+id/button_like"
             app:icon_type="heart"
             app:icon_size="24dp"
+            app:circle_end_color="@color/black"
+            app:dots_secondary_color="@color/black"
+            app:circle_start_color="@color/black"
+            app:dots_primary_color="@color/black"
             android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
