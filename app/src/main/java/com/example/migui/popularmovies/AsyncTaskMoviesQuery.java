@@ -16,21 +16,21 @@ class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        String githubSearchResults = null;
+        String result = null;
         try {
             switch (sortType) {
                 case POPULAR:
-                    githubSearchResults = NetworkUtils.queryFilms(sortType);
+                    result = NetworkUtils.queryFilms(sortType);
                     break;
                 case TOP_RATED:
-                    githubSearchResults = NetworkUtils.queryFilms(sortType);
+                    result = NetworkUtils.queryFilms(sortType);
                     break;
                 case UNIQUE:
-                    githubSearchResults = NetworkUtils.queryDetails(params[0]);
+                    result = NetworkUtils.queryDetails(params[0]);
                     break;
             }
         } catch (IOException ignored) {}
-        return githubSearchResults;
+        return result;
     }
 
     @Override
