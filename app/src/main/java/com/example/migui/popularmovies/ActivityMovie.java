@@ -79,7 +79,12 @@ public class ActivityMovie extends ActivityBase
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+        LoaderManager manager = getLoaderManager();
+        if (manager.getLoader(MOVIE_LOADER_ID) == null) {
+            manager.initLoader(MOVIE_LOADER_ID, null, this);
+        } else {
+            manager.restartLoader(MOVIE_LOADER_ID, null, this);
+        }
     }
 
     @Override

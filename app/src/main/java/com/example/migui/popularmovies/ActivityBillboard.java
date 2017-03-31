@@ -3,11 +3,13 @@ package com.example.migui.popularmovies;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.content.CursorLoader;
 import android.app.LoaderManager;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -33,7 +35,7 @@ import static com.example.migui.popularmovies.NetworkUtils.isOnline;
 public class ActivityBillboard extends ActivityBase
         implements PosterAdapter.PosterAdapterOnClickHandler,
         AsyncTaskMoviesQuery.AsyncTaskCompleteListener<String>,
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     public enum SORT_TYPE {
         POPULAR, TOP_RATED, ALL, FAVOURITES, UNIQUE
@@ -44,6 +46,7 @@ public class ActivityBillboard extends ActivityBase
             MovieContract.MovieEntry.COLUMN_FRONT_POSTER,
             MovieContract.MovieEntry._ID
     };
+    private final String SORT_CRITERIA = "sort_criteria";
 
     @BindView(R.id.view_movies)
     RecyclerView rvMoviesList;
@@ -54,7 +57,6 @@ public class ActivityBillboard extends ActivityBase
 
     private PosterAdapter posterAdapter;
     private Toast toast;
-    private SORT_TYPE sort = SORT_TYPE.ALL;
     private Menu menu;
 
     @Override
@@ -68,9 +70,19 @@ public class ActivityBillboard extends ActivityBase
         posterAdapter = new PosterAdapter(this);
         rvMoviesList.setAdapter(posterAdapter);
 
-        sortMovies(SORT_TYPE.POPULAR);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        getLoaderManager().initLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
+        sortMovies(SORT_TYPE.values()
+                [sharedPreferences.getInt(SORT_CRITERIA, SORT_TYPE.POPULAR.ordinal())]);
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+
+        LoaderManager manager = getLoaderManager();
+        if (manager.getLoader(MOVIES_LOADER_ID) == null)
+            manager.initLoader(MOVIES_LOADER_ID, null, this);
+        else {
+            manager.restartLoader(MOVIES_LOADER_ID, null, this);
+        }
     }
 
     @Override
@@ -80,10 +92,19 @@ public class ActivityBillboard extends ActivityBase
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_billboard, menu);
         this.menu = menu;
-        switch (sort) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        switch (SORT_TYPE.values()
+                [sharedPreferences.getInt(SORT_CRITERIA, SORT_TYPE.POPULAR.ordinal())]) {
             case POPULAR:
                 menu.findItem(R.id.menu_sort).setTitle(getString(R.string.popular));
                 menu.findItem(R.id.menu_sort_pop).setChecked(true);
@@ -140,10 +161,16 @@ public class ActivityBillboard extends ActivityBase
      */
     private void sortMovies(SORT_TYPE sort) {
         changeViews(true);
-        this.sort = sort;
-        if (!isOnline(this) || sort == SORT_TYPE.ALL || sort == SORT_TYPE.FAVOURITES)
-            getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, ActivityBillboard.this);
-        else
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putInt(SORT_CRITERIA, sort.ordinal()).apply();
+        if (!isOnline(this) || sort == SORT_TYPE.ALL || sort == SORT_TYPE.FAVOURITES) {
+            LoaderManager manager = getLoaderManager();
+            if (manager.getLoader(MOVIES_LOADER_ID) == null)
+                manager.initLoader(MOVIES_LOADER_ID, null, this);
+            else {
+                manager.restartLoader(MOVIES_LOADER_ID, null, this);
+            }
+        } else
             new AsyncTaskMoviesQuery(this, sort).execute();
     }
 
@@ -185,7 +212,7 @@ public class ActivityBillboard extends ActivityBase
     private int calculateNoOfColumns() {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return (int) (dpWidth / 160);
+        return (int) (dpWidth / 180);
     }
 
     @Override
@@ -198,7 +225,12 @@ public class ActivityBillboard extends ActivityBase
             }
             getContentResolver().bulkInsert(MovieContract.MovieEntry.getUri(sort_type),
                     cvs.toArray(new ContentValues[cvs.size()]));
-            getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+            LoaderManager manager = getLoaderManager();
+            if (manager.getLoader(MOVIES_LOADER_ID) == null)
+                manager.initLoader(MOVIES_LOADER_ID, null, this);
+            else {
+                manager.restartLoader(MOVIES_LOADER_ID, null, this);
+            }
         } catch (JSONException e) {
             errorConnection();
         }
@@ -208,10 +240,12 @@ public class ActivityBillboard extends ActivityBase
     public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
         switch (id) {
             case MOVIES_LOADER_ID:
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SORT_TYPE sort = SORT_TYPE.values()
+                        [sharedPreferences.getInt(SORT_CRITERIA, SORT_TYPE.POPULAR.ordinal())];
                 String selection = MovieContract.MovieEntry.getSelection(sort);
                 String sortOrder = MovieContract.MovieEntry.getOrderBy(sort);
                 Uri uri = MovieContract.MovieEntry.getUri(sort);
-
                 return new CursorLoader(this,
                         uri,
                         MAIN_PROJECTION,
@@ -232,5 +266,14 @@ public class ActivityBillboard extends ActivityBase
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         posterAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch (key) {
+            case SORT_CRITERIA:
+                rvMoviesList.smoothScrollToPosition(0);
+                getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+        }
     }
 }
