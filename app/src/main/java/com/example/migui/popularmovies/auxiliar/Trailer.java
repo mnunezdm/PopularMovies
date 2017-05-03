@@ -4,12 +4,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Trailer {
-    private final static String URL_YOUTUBE_THUMBAIL = "https://img.youtube.com/vi/%1$s/0.jpg";
+    private final static String URL_YOUTUBE_THUMBNAIL = "https://img.youtube.com/vi/%1$s/0.jpg";
     private String key;
     private String name;
     private String site;
 
-    Trailer(JSONObject json) {
+    public Trailer(JSONObject json) {
         try {
             key = json.getString("key");
             name = json.getString("name");
@@ -32,7 +32,6 @@ public class Trailer {
     }
 
     public String getThumbnailString() {
-        return String.format(URL_YOUTUBE_THUMBAIL, key);
+        return String.format(URL_YOUTUBE_THUMBNAIL, key);
     }
-
 }

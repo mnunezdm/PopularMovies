@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.migui.popularmovies.R;
-import com.example.migui.popularmovies.Review;
+import com.example.migui.popularmovies.auxiliar.Review;
 
 import java.util.List;
 

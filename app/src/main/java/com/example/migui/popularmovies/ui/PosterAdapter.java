@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.migui.popularmovies.NetworkUtils;
+import com.example.migui.popularmovies.sync.NetworkUtils;
 import com.example.migui.popularmovies.R;
 import com.example.migui.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;

@@ -3,20 +3,20 @@ package com.example.migui.popularmovies.auxiliar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class Review {
+public class Review {
     private String author;
     private String content;
 
-    Review(JSONObject json) throws JSONException {
+    public Review(JSONObject json) throws JSONException {
         author = json.getString("author");
         content = json.getString("content");
     }
 
-    String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    String getContent() {
+    public String getContent() {
         return content;
     }
 }

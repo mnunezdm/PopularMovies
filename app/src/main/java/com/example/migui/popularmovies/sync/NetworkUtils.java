@@ -17,11 +17,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-class NetworkUtils {
+public class NetworkUtils {
     private final static String FILM_BASE_URL =
             "http://api.themoviedb.org/3/movie/";
 
-    final static String IMAGE_BASE_URL =
+    public final static String IMAGE_BASE_URL =
             "https://image.tmdb.org/t/p/w500";
 
     private final static String PATH_POPULAR = "popular";
@@ -85,7 +85,7 @@ class NetworkUtils {
         }
     }
 
-    static boolean isOnline(Context context) {
+    public static boolean isOnline(Context context) {
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

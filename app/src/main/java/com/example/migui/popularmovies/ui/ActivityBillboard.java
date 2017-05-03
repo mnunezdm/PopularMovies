@@ -20,8 +20,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.migui.popularmovies.AsyncTaskMoviesQuery;
-import com.example.migui.popularmovies.Film;
+import com.example.migui.popularmovies.sync.AsyncTaskMoviesQuery;
+import com.example.migui.popularmovies.auxiliar.Film;
 import com.example.migui.popularmovies.R;
 import com.example.migui.popularmovies.data.MovieContract;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.example.migui.popularmovies.NetworkUtils.isOnline;
+import static com.example.migui.popularmovies.sync.NetworkUtils.isOnline;
 
 public class ActivityBillboard extends ActivityBase
         implements PosterAdapter.PosterAdapterOnClickHandler,

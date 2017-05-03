@@ -8,8 +8,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.ShareCompat;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,14 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.migui.popularmovies.AsyncTaskMoviesQuery;
-import com.example.migui.popularmovies.Film;
-import com.example.migui.popularmovies.NetworkUtils;
+import com.example.migui.popularmovies.sync.AsyncTaskMoviesQuery;
+import com.example.migui.popularmovies.auxiliar.Film;
+import com.example.migui.popularmovies.sync.NetworkUtils;
 import com.example.migui.popularmovies.R;
-import com.example.migui.popularmovies.Review;
+import com.example.migui.popularmovies.auxiliar.Review;
 import com.example.migui.popularmovies.auxiliar.Trailer;
 import com.example.migui.popularmovies.data.MovieContract;
-
 import com.like.LikeButton;
 import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;

@@ -1,17 +1,14 @@
 package com.example.migui.popularmovies.sync;
 
 import android.os.AsyncTask;
-
-
 import com.example.migui.popularmovies.ui.ActivityBillboard;
-
 import java.io.IOException;
 
-class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
+public class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
     private AsyncTaskCompleteListener<String> listener;
     private ActivityBillboard.SORT_TYPE sortType;
 
-    AsyncTaskMoviesQuery(AsyncTaskCompleteListener<String> listener, ActivityBillboard.SORT_TYPE sortType) {
+    public AsyncTaskMoviesQuery(AsyncTaskCompleteListener<String> listener, ActivityBillboard.SORT_TYPE sortType) {
         this.listener = listener;
         this.sortType = sortType;
     }
@@ -40,7 +37,7 @@ class AsyncTaskMoviesQuery extends AsyncTask<String, Void, String> {
         listener.taskCompleted(sortType, s);
     }
 
-    interface AsyncTaskCompleteListener<E> {
+    public interface AsyncTaskCompleteListener<E> {
         void taskCompleted(ActivityBillboard.SORT_TYPE sort_type, E s);
     }
 }

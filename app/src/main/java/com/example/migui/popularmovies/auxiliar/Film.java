@@ -8,8 +8,7 @@ import org.json.JSONObject;
 
 import com.example.migui.popularmovies.data.MovieContract.MovieEntry;
 
-class Film {
-
+public class Film {
     private long id;
     private String title;
     private String origTitle;
@@ -20,7 +19,7 @@ class Film {
     private String releaseDate;
     private boolean favourite;
 
-    Film(JSONObject json) throws JSONException {
+    public Film(JSONObject json) throws JSONException {
         id = json.getLong("id");
         title = json.getString("title");
         origTitle = json.getString("original_title");
@@ -31,7 +30,7 @@ class Film {
         posterPath = json.getString("poster_path");
     }
 
-    Film(Cursor cursor) {
+    public Film(Cursor cursor) {
         cursor.moveToFirst();
         id = cursor.getLong(cursor.getColumnIndex(MovieEntry._ID));
         title =  cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE));
@@ -46,37 +45,35 @@ class Film {
 
     // *************** Getters ***************
 
-
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    String getOrigTitle() {
+    public String getOrigTitle() {
         return (origTitle.equals(title))? null : origTitle;
     }
 
-    String getOverview() {
+    public String getOverview() {
         return overview;
     }
 
-    String getPosterPath() {
+    public String getPosterPath() {
         return posterPath;
     }
 
-    String getReleaseDate() {
+    public String getReleaseDate() {
         return releaseDate;
     }
 
-    long getId() {
-
+    public long getId() {
         return id;
     }
 
-    boolean isFavourite() {
+    public boolean isFavourite() {
         return favourite;
     }
 
-    ContentValues getContentValues() {
+    public ContentValues getContentValues() {
         ContentValues cv = new ContentValues();
         cv.put(MovieEntry._ID, id);
         cv.put(MovieEntry.COLUMN_TITLE, title);
@@ -89,9 +86,7 @@ class Film {
         return cv;
     }
 
-    String getRating(String votes) {
+    public String getRating(String votes) {
         return String.valueOf(voteAverage) + "/10 (" + String.valueOf(voteNumber) +" " + votes +  ")";
     }
-
-
 }
