@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.ui;
 
 import android.app.LoaderManager;
 import android.content.ActivityNotFoundException;
@@ -21,6 +21,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.migui.popularmovies.AsyncTaskMoviesQuery;
+import com.example.migui.popularmovies.Film;
+import com.example.migui.popularmovies.NetworkUtils;
+import com.example.migui.popularmovies.R;
+import com.example.migui.popularmovies.Review;
+import com.example.migui.popularmovies.auxiliar.Trailer;
 import com.example.migui.popularmovies.data.MovieContract;
 
 import com.like.LikeButton;

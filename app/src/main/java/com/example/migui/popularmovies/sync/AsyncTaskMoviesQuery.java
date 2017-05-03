@@ -1,7 +1,9 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.sync;
 
 import android.os.AsyncTask;
 
+
+import com.example.migui.popularmovies.ui.ActivityBillboard;
 
 import java.io.IOException;
 

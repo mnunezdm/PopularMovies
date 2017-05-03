@@ -1,9 +1,9 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.auxiliar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class Trailer {
+public class Trailer {
     private final static String URL_YOUTUBE_THUMBAIL = "https://img.youtube.com/vi/%1$s/0.jpg";
     private String key;
     private String name;
@@ -19,7 +19,7 @@ class Trailer {
         }
     }
 
-    String getKey() {
+    public String getKey() {
         return key;
     }
 
@@ -27,11 +27,11 @@ class Trailer {
         return name;
     }
 
-    String getSite() {
+    public String getSite() {
         return site;
     }
 
-    String getThumbailString() {
+    public String getThumbnailString() {
         return String.format(URL_YOUTUBE_THUMBAIL, key);
     }
 

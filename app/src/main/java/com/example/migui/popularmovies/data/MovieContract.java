@@ -3,7 +3,7 @@ package com.example.migui.popularmovies.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.example.migui.popularmovies.ActivityBillboard;
+import com.example.migui.popularmovies.ui.ActivityBillboard;
 
 public class MovieContract {
 

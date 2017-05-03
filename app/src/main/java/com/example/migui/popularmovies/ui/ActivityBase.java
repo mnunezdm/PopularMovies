@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.ui;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;

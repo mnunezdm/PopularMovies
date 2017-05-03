@@ -1,10 +1,11 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.sync;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.Log;
+
+import com.example.migui.popularmovies.ui.ActivityBillboard;
 
 import org.json.JSONException;
 import org.json.JSONObject;

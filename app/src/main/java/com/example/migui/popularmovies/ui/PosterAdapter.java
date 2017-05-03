@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.ui;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.migui.popularmovies.NetworkUtils;
+import com.example.migui.popularmovies.R;
 import com.example.migui.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
 

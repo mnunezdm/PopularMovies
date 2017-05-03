@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.ui;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -20,6 +20,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.migui.popularmovies.AsyncTaskMoviesQuery;
+import com.example.migui.popularmovies.Film;
+import com.example.migui.popularmovies.R;
 import com.example.migui.popularmovies.data.MovieContract;
 
 import org.json.JSONArray;

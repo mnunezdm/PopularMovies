@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.auxiliar;
 
 import org.json.JSONException;
 import org.json.JSONObject;

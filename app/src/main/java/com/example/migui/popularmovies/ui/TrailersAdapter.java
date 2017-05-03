@@ -1,4 +1,4 @@
-package com.example.migui.popularmovies;
+package com.example.migui.popularmovies.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.migui.popularmovies.R;
+import com.example.migui.popularmovies.auxiliar.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ class TrailersAdapter
     public void onBindViewHolder(TrailersAdapter.TrailerAdapterViewHolder holder, int position) {
         Trailer trailer = trailers.get(position);
 
-        Picasso.with(context).load(trailer.getThumbailString())
+        Picasso.with(context).load(trailer.getThumbnailString())
                 .placeholder(R.drawable.ic_unknown).error(R.drawable.ic_error)
                 .into(holder.imageViewCover);
     }
